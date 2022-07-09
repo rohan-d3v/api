@@ -13,6 +13,7 @@
 - [x] express-session
 - [x] flash
 - [x] path
+- [x] morgan
 
 ---
 
