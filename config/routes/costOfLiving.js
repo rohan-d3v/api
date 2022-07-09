@@ -20,31 +20,17 @@ module.exports = (app, axios) => {
         axios
           .get(sourceCountryQuery)
           .then((sourceCountryResponse) => {
-            var sourceCountryDataArr = sourceCountryResponse.data[1];
-            var sourceCountryData = sourceCountryDataArr[0];
-            for (
-              i = 1;
-              i < sourceCountryResponse.data[0].total &&
-              !sourceCountryData.value;
-              i++
-            ) {
-              sourceCountryData = sourceCountryDataArr[i];
-            }
+            var sourceCountryData = countryDataResponseHandler(
+              sourceCountryResponse.data
+            );
 
             axios
               .get(destinationCountryQuery)
               .then((destinationCountryResponse) => {
-                var destinationCountryDataArr =
-                  destinationCountryResponse.data[1];
-                var destinationCountryData = destinationCountryDataArr[0];
-                for (
-                  i = 1;
-                  i < destinationCountryResponse.data[0].total &&
-                  !destinationCountryData.value;
-                  i++
-                ) {
-                  destinationCountryData = destinationCountryDataArr[i];
-                }
+                var destinationCountryData = countryDataResponseHandler(
+                  destinationCountryResponse.data
+                );
+
                 const costOfLiving =
                   (req.body.value / sourceCountryData.value) *
                   destinationCountryData.value;
@@ -106,4 +92,13 @@ responseHandler = (res, statusCode, message, dataObj) => {
     message: message,
     data: dataObj,
   });
+};
+
+countryDataResponseHandler = (countryDataResponse) => {
+  var countryDataArr = countryDataResponse[1];
+  var countryData = countryDataArr[0];
+  for (i = 1; i < countryDataResponse[0].total && !countryData.value; i++) {
+    countryData = countryDataArr[i];
+  }
+  return countryData;
 };
